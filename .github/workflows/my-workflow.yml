@@ -1,0 +1,28 @@
+name: Comedy Comment Workflow
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  add-comment:
+    if: github.event.label.name == 'dad-joke'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get a new joke
+        id: joke
+        uses: ./.github/actions/joke-action
+      - name: Get Dad Joke
+        run: echo "Dad joke is ${{ steps.joke.outputs.dad-joke }}"  
+      - name: Add Dad joke as a comment to the issue
+        run: gh issue comment "$NUMBER" --body "$BODY"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.issue.number }}
+          BODY: >
+            Little dad joke to make you **smile!**
+            :sparkles: ${{ steps.joke.outputs.dad-joke }} :sparkles:
