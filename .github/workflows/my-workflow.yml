@@ -2,11 +2,11 @@ name: Comedy Comment Workflow
 
 on:
   issues:
-    types: [labeled]
+    types: [labeled, closed]
 
 jobs:
   add-comment:
-    if: github.event.label.name == 'dad-joke'
+    if: github.event.label.name == 'dad-joke' || github.event.issue.state == 'closed'
     runs-on: ubuntu-latest
     permissions:
       issues: write
